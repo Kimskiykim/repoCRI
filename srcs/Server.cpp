@@ -63,8 +63,8 @@ void Server::loadConfig()
 		adminNickname = "None";
 		allowedIP = 0UL;
 		maxChannels = 10;
-		maxInactiveTimeout = 120;
-		maxResponseTimeout = 60;
+		maxInactiveTimeout = 1200;
+		maxResponseTimeout = 600;
 	}
 
 	//Only for debug
@@ -150,8 +150,8 @@ bool	Server::containsChannel(const std::string &name) const
 
 void	Server::createSocket()
 {
-	sockfd = socket(AF_INET, SOCK_STREAM, 0);
-	if (sockfd == -1)
+	this->sockfd = socket(AF_INET, SOCK_STREAM, 0);
+	if (this->sockfd == -1)
 	{
 		std::cout << "Failed to create socket. errno: " << errno << std::endl;
 		exit(EXIT_FAILURE);
