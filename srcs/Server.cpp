@@ -37,7 +37,7 @@ port(port), timeout(1), password(password)
 
 	// Read MOTD
 	std::string		line;
-	std::ifstream	motdFile("conf/IRCat.motd");
+	std::ifstream	motdFile("conf/IRChan.motd");
 	if (motdFile.is_open())
 	{
 		while (getline(motdFile, line))
