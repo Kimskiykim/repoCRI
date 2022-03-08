@@ -52,15 +52,15 @@ port(port), timeout(1), password(password)
 void Server::loadConfig() 
 {
 	{
-		name = "IRCat";
-		info = "None";
-		version = "None";
+		name = "IRC-Chan";
+		info = "IRC-Chan is chat for everyone";
+		version = "1.1";
 		debuglvl = "None";
 		comments = "None";
 		describe = "None";
-		adminName = "None";
-		adminEmail = "None";
-		adminNickname = "None";
+		adminName = "droro";
+		adminEmail = "droro@example.com";
+		adminNickname = "droro";
 		allowedIP = 0UL;
 		maxChannels = 10;
 		maxInactiveTimeout = 1200;

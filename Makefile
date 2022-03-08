@@ -35,10 +35,10 @@ $(OSOURCEFOLDER):
 	mkdir objects/commands
 
 $(OSOURCEFOLDER)%.o: $(SOURCEFOLDER)%.cpp
-	clang++ -Wall -Werror -Wextra -c $< -o $@ -std=c++98 -I $(INCLUDEFOLDER) -I ./$(LIBJSONFOLDER)/src
+	clang++ -Wall -Werror -Wextra -c $< -o $@ -std=c++98 -I $(INCLUDEFOLDER)
 
 $(NAME): $(OSOURCEFOLDER) $(OSOURCE)
-	clang++ $(OSOURCE) -o $(NAME) $(LIBJSONFLAGS)
+	clang++ $(OSOURCE) -o $(NAME)
 
 clean:
 	rm -rf $(OSOURCEFOLDER)
@@ -48,4 +48,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: clean fclean re all bot libjson
+.PHONY: clean fclean re all
