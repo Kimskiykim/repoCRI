@@ -1,9 +1,9 @@
 #include "sendError.hpp"
 
-int		sendError(const User &user, int err, const std::string &arg1, const std::string &arg2)
+int sendError(const User &user, int err, const std::string &arg1, const std::string &arg2)
 {
-	std::string	msg = ":" + user.getServername() + " ";
-	std::stringstream	ss;
+	std::string msg = ":" + user.getServername() + " ";
+	std::stringstream ss;
 	ss << err;
 	msg += ss.str() + " " + user.getNickname();
 	switch (err)

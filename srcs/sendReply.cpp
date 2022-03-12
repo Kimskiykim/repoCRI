@@ -1,13 +1,13 @@
 #include "sendReply.hpp"
 
-int		sendReply(const std::string &from, const User &user, int rpl, \
-				const std::string &arg1,const std::string &arg2, \
-				const std::string &arg3,const std::string &arg4, \
-				const std::string &arg5,const std::string &arg6, \
-				const std::string &arg7,const std::string &arg8)
+int sendReply(const std::string &from, const User &user, int rpl,
+			  const std::string &arg1, const std::string &arg2,
+			  const std::string &arg3, const std::string &arg4,
+			  const std::string &arg5, const std::string &arg6,
+			  const std::string &arg7, const std::string &arg8)
 {
-	std::string	msg = ":" + from + " ";
-	std::stringstream	ss;
+	std::string msg = ":" + from + " ";
+	std::stringstream ss;
 	ss << rpl;
 	msg += ss.str() + " " + user.getNickname() + " ";
 	switch (rpl)
@@ -55,7 +55,7 @@ int		sendReply(const std::string &from, const User &user, int rpl, \
 		msg += "Channel :Users  Name\n";
 		break;
 	case RPL_LIST:
-		msg += arg1 +  " " + arg2 + " :" + arg3 + "\n";
+		msg += arg1 + " " + arg2 + " :" + arg3 + "\n";
 		break;
 	case RPL_LISTEND:
 		msg += ":End of /LIST\n";

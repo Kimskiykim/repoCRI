@@ -5,9 +5,9 @@
 #include "Server.hpp"
 #include <csignal>
 
-bool	work = true;
+bool work = true;
 
-void	sigHandler(int signum)
+void sigHandler(int signum)
 {
 	(void)signum;
 	work = false;
@@ -29,7 +29,7 @@ int main(int argc, char **argv)
 		exit(EXIT_FAILURE);
 	}
 
-	Server		server(port, argv[2]);
+	Server server(port, argv[2]);
 
 	// Create a socket (IPv4, TCP)
 	server.createSocket();

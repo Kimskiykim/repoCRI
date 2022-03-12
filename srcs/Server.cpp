@@ -1,7 +1,6 @@
 #include "Server.hpp"
 
-Server::Server(int port, const std::string &password) :
-port(port), timeout(1), password(password)
+Server::Server(int port, const std::string &password) : port(port), timeout(1), password(password)
 {
 	commands["PASS"] = &Server::passCmd;
 	commands["NICK"] = &Server::nickCmd;
@@ -36,20 +35,20 @@ port(port), timeout(1), password(password)
 	commands["KILL"] = &Server::killCmd;
 
 	// Read MOTD
-	std::string		line;
-	std::ifstream	motdFile("conf/IRChan.motd");
+	std::string line;
+	std::ifstream motdFile("conf/IRChan.motd");
 	if (motdFile.is_open())
 	{
 		while (getline(motdFile, line))
 			motd.push_back(line);
 		motdFile.close();
 	}
-	
+
 	loadConfig();
-	//Check config for set correct values ?
+	// Check config for set correct values ?
 }
 
-void Server::loadConfig() 
+void Server::loadConfig()
 {
 	{
 		name = "IRC-Chan";
@@ -67,7 +66,7 @@ void Server::loadConfig()
 		maxResponseTimeout = 600;
 	}
 
-	//Only for debug
+	// Only for debug
 	std::cout << "CONFIG" << std::endl;
 	std::cout << "servername: " << name << std::endl;
 	std::cout << "info: " << info << std::endl;
@@ -78,10 +77,10 @@ void Server::loadConfig()
 	std::cout << "adminName: " << adminName << std::endl;
 	std::cout << "adminEmail: " << adminEmail << std::endl;
 	std::cout << "adminNickname: " << adminNickname << std::endl;
-	std::cout << "maxChannels: " << maxChannels << std::endl;	
-	std::cout << "maxInactiveTimeout: " << maxInactiveTimeout << std::endl;	
-	std::cout << "maxResponseTimeout: " << maxResponseTimeout << std::endl;	
-	
+	std::cout << "maxChannels: " << maxChannels << std::endl;
+	std::cout << "maxInactiveTimeout: " << maxInactiveTimeout << std::endl;
+	std::cout << "maxResponseTimeout: " << maxResponseTimeout << std::endl;
+
 	struct in_addr paddr;
 	paddr.s_addr = allowedIP;
 	std::cout << "allowedIP(int): " << allowedIP << std::endl;
@@ -91,8 +90,10 @@ void Server::loadConfig()
 	std::map<std::string, std::string>::iterator end = operators.end();
 	std::map<std::string, std::string>::iterator it;
 
-	for (it = beg; it != end; it++)	{
-		std::cout << "Login: " << it->first << " " << "Hash: " << it->second << std::endl;
+	for (it = beg; it != end; it++)
+	{
+		std::cout << "Login: " << it->first << " "
+				  << "Hash: " << it->second << std::endl;
 	}
 }
 
@@ -103,31 +104,31 @@ Server::~Server()
 		close(connectedUsers[i]->getSockfd());
 		delete connectedUsers[i];
 	}
-	std::map<std::string, Channel *>::const_iterator	beg = channels.begin();
-	std::map<std::string, Channel *>::const_iterator	end = channels.end();
+	std::map<std::string, Channel *>::const_iterator beg = channels.begin();
+	std::map<std::string, Channel *>::const_iterator end = channels.end();
 	for (; beg != end; ++beg)
 		delete (*beg).second;
 	close(sockfd);
 }
 
-const int	&Server::getSockfd() const
+const int &Server::getSockfd() const
 {
 	return (sockfd);
 }
 
-User	*Server::getUserByName(const std::string &name)
+User *Server::getUserByName(const std::string &name)
 {
-	User	*ret;
-	size_t	usersCount = connectedUsers.size();
+	User *ret;
+	size_t usersCount = connectedUsers.size();
 	for (size_t i = 0; i < usersCount; i++)
 		if (connectedUsers[i]->getNickname() == name)
 			ret = connectedUsers[i];
 	return ret;
 }
 
-bool	Server::containsNickname(const std::string &nickname) const
+bool Server::containsNickname(const std::string &nickname) const
 {
-	size_t	usersCount = connectedUsers.size();
+	size_t usersCount = connectedUsers.size();
 	for (size_t i = 0; i < usersCount; i++)
 	{
 		if (connectedUsers[i]->getNickname() == nickname)
@@ -136,19 +137,20 @@ bool	Server::containsNickname(const std::string &nickname) const
 	return (false);
 }
 
-bool	Server::containsChannel(const std::string &name) const
+bool Server::containsChannel(const std::string &name) const
 {
 	try
 	{
 		channels.at(name);
 		return true;
 	}
-	catch(const std::exception& e)
-	{}
+	catch (const std::exception &e)
+	{
+	}
 	return false;
 }
 
-void	Server::createSocket()
+void Server::createSocket()
 {
 	this->sockfd = socket(AF_INET, SOCK_STREAM, 0);
 	if (this->sockfd == -1)
@@ -158,7 +160,7 @@ void	Server::createSocket()
 	}
 }
 
-void	Server::bindSocket()
+void Server::bindSocket()
 {
 	const int trueFlag = 1;
 	if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &trueFlag, sizeof(int)) < 0)
@@ -168,15 +170,15 @@ void	Server::bindSocket()
 	}
 	sockaddr.sin_family = AF_INET;
 	sockaddr.sin_addr.s_addr = allowedIP; // INADDR_ANY; Was 0.0.0.0, now 127.0.0.1
-	sockaddr.sin_port = htons(port); // htons is necessary to convert a number to network byte order
-	if (bind(sockfd, (struct sockaddr*)&sockaddr, sizeof(sockaddr)) < 0)
+	sockaddr.sin_port = htons(port);	  // htons is necessary to convert a number to network byte order
+	if (bind(sockfd, (struct sockaddr *)&sockaddr, sizeof(sockaddr)) < 0)
 	{
 		std::cout << "Failed to bind to port " << port << ". errno: " << errno << std::endl;
 		exit(EXIT_FAILURE);
 	}
 }
 
-void	Server::listenSocket()
+void Server::listenSocket()
 {
 	if (listen(sockfd, 128) < 0)
 	{
@@ -186,17 +188,17 @@ void	Server::listenSocket()
 	fcntl(sockfd, F_SETFL, O_NONBLOCK);
 }
 
-void	Server::grabConnection()
+void Server::grabConnection()
 {
-	//std::cout<< connectedUsers.size() << std::endl;
+	// std::cout<< connectedUsers.size() << std::endl;
 
 	size_t addrlen = sizeof(sockaddr);
-	int connection = accept(sockfd, (struct sockaddr*)&sockaddr, (socklen_t*)&addrlen);
+	int connection = accept(sockfd, (struct sockaddr *)&sockaddr, (socklen_t *)&addrlen);
 	if (connection >= 0)
 	{
-		char	host[INET_ADDRSTRLEN];
+		char host[INET_ADDRSTRLEN];
 		inet_ntop(AF_INET, &(sockaddr.sin_addr), host, INET_ADDRSTRLEN);
-		struct pollfd	pfd;
+		struct pollfd pfd;
 		pfd.fd = connection;
 		pfd.events = POLLIN;
 		pfd.revents = 0;
@@ -205,10 +207,10 @@ void	Server::grabConnection()
 	}
 }
 
-void	Server::processMessages()
+void Server::processMessages()
 {
-	int	pret = poll(userFDs.data(), userFDs.size(), timeout);
-	std::vector<int>	toErase;
+	int pret = poll(userFDs.data(), userFDs.size(), timeout);
+	std::vector<int> toErase;
 	if (pret != 0)
 	{
 		// Read from the connection
@@ -226,18 +228,16 @@ void	Server::processMessages()
 	}
 }
 
-int		Server::hadleMessages(User &user)
+int Server::hadleMessages(User &user)
 {
-	while (user.getMessages().size() > 0 \
-			&& user.getMessages().front()[user.getMessages().front().size() - 1] == '\n')
+	while (user.getMessages().size() > 0 && user.getMessages().front()[user.getMessages().front().size() - 1] == '\n')
 	{
-		Message	msg(user.getMessages().front());
+		Message msg(user.getMessages().front());
 		user.popMessage();
 		// log message to server console
 		logMessage(msg);
 		// handle
-		if (!(user.getFlags() & REGISTERED) && msg.getCommand() != "QUIT" && msg.getCommand() != "PASS" \
-				&& msg.getCommand() != "USER" && msg.getCommand() != "NICK")
+		if (!(user.getFlags() & REGISTERED) && msg.getCommand() != "QUIT" && msg.getCommand() != "PASS" && msg.getCommand() != "USER" && msg.getCommand() != "NICK")
 			sendError(user, ERR_NOTREGISTERED);
 		else
 		{
@@ -247,7 +247,7 @@ int		Server::hadleMessages(User &user)
 				if (ret == DISCONNECT)
 					return (DISCONNECT);
 			}
-			catch(const std::exception& e)
+			catch (const std::exception &e)
 			{
 				sendError(user, ERR_UNKNOWNCOMMAND, msg.getCommand());
 			}
@@ -257,7 +257,7 @@ int		Server::hadleMessages(User &user)
 	return (0);
 }
 
-void	Server::notifyUsers(User &user, const std::string &notification)
+void Server::notifyUsers(User &user, const std::string &notification)
 {
 	const std::vector<const Channel *> chans = user.getChannels();
 	for (size_t i = 0; i < connectedUsers.size(); i++)
@@ -267,13 +267,13 @@ void	Server::notifyUsers(User &user, const std::string &notification)
 			if (chans[j]->containsNickname(connectedUsers[i]->getNickname()))
 			{
 				connectedUsers[i]->sendMessage(notification);
-				break ;
+				break;
 			}
 		}
 	}
 }
 
-void	Server::deleteBrokenConnections()
+void Server::deleteBrokenConnections()
 {
 	for (size_t i = 0; i < connectedUsers.size(); ++i)
 	{
@@ -282,8 +282,8 @@ void	Server::deleteBrokenConnections()
 			this->nicknamesHistory.addUser(*(connectedUsers[i]));
 			notifyUsers(*(connectedUsers[i]), ":" + connectedUsers[i]->getPrefix() + " QUIT :" + connectedUsers[i]->getQuitMessage() + "\n");
 			close(connectedUsers[i]->getSockfd());
-			std::map<std::string, Channel *>::iterator	beg = channels.begin();
-			std::map<std::string, Channel *>::iterator	end = channels.end();
+			std::map<std::string, Channel *>::iterator beg = channels.begin();
+			std::map<std::string, Channel *>::iterator end = channels.end();
 			for (; beg != end; ++beg)
 				if ((*beg).second->containsNickname(connectedUsers[i]->getNickname()))
 					(*beg).second->disconnect(*(connectedUsers[i]));
@@ -295,10 +295,10 @@ void	Server::deleteBrokenConnections()
 	}
 }
 
-void	Server::deleteEmptyChannels()
+void Server::deleteEmptyChannels()
 {
-	std::map<std::string, Channel *>::const_iterator	beg = channels.begin();
-	std::map<std::string, Channel *>::const_iterator	end = channels.end();
+	std::map<std::string, Channel *>::const_iterator beg = channels.begin();
+	std::map<std::string, Channel *>::const_iterator end = channels.end();
 	for (; beg != end;)
 	{
 		if ((*beg).second->isEmpty())
@@ -312,20 +312,20 @@ void	Server::deleteEmptyChannels()
 	}
 }
 
-void	Server::checkConnectionWithUsers()
+void Server::checkConnectionWithUsers()
 {
 	for (size_t i = 0; i < connectedUsers.size(); i++)
 	{
 		if (this->connectedUsers[i]->getFlags() & REGISTERED)
 		{
-			if (time(0) - this->connectedUsers[i]->getTimeOfLastMessage() > static_cast<time_t>(maxInactiveTimeout) )
+			if (time(0) - this->connectedUsers[i]->getTimeOfLastMessage() > static_cast<time_t>(maxInactiveTimeout))
 			{
 				this->connectedUsers[i]->sendMessage(":" + this->name + " PING :" + this->name + "\n");
 				this->connectedUsers[i]->updateTimeAfterPing();
 				this->connectedUsers[i]->updateTimeOfLastMessage();
 				this->connectedUsers[i]->setFlag(PINGING);
 			}
-			if ((connectedUsers[i]->getFlags() & PINGING) && time(0) - connectedUsers[i]->getTimeAfterPing() > static_cast<time_t>(maxResponseTimeout) )
+			if ((connectedUsers[i]->getFlags() & PINGING) && time(0) - connectedUsers[i]->getTimeAfterPing() > static_cast<time_t>(maxResponseTimeout))
 				connectedUsers[i]->setFlag(BREAKCONNECTION);
 		}
 	}

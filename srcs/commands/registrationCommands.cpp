@@ -1,7 +1,7 @@
 #include "Server.hpp"
 #include "Hash.hpp"
 
-void	Server::sendMOTD(const User &user) const
+void Server::sendMOTD(const User &user) const
 {
 	if (motd.size() == 0)
 		sendError(user, ERR_NOMOTD);
@@ -14,7 +14,7 @@ void	Server::sendMOTD(const User &user) const
 	}
 }
 
-int		Server::checkConnection(User &user)
+int Server::checkConnection(User &user)
 {
 	if (user.getNickname().size() > 0 && user.getUsername().size() > 0)
 	{
@@ -32,7 +32,7 @@ int		Server::checkConnection(User &user)
 	return (0);
 }
 
-int		Server::passCmd(const Message &msg, User &user)
+int Server::passCmd(const Message &msg, User &user)
 {
 	if (msg.getParams().size() == 0)
 		sendError(user, ERR_NEEDMOREPARAMS, msg.getCommand());
@@ -43,7 +43,7 @@ int		Server::passCmd(const Message &msg, User &user)
 	return 0;
 }
 
-int		Server::nickCmd(const Message &msg, User &user)
+int Server::nickCmd(const Message &msg, User &user)
 {
 	if (msg.getParams().size() == 0)
 		sendError(user, ERR_NEEDMOREPARAMS, msg.getCommand());
@@ -63,7 +63,7 @@ int		Server::nickCmd(const Message &msg, User &user)
 	return (checkConnection(user));
 }
 
-int		Server::userCmd(const Message &msg, User &user)
+int Server::userCmd(const Message &msg, User &user)
 {
 	if (msg.getParams().size() < 4)
 		sendError(user, ERR_NEEDMOREPARAMS, msg.getCommand());
@@ -77,7 +77,7 @@ int		Server::userCmd(const Message &msg, User &user)
 	return (checkConnection(user));
 }
 
-int		Server::operCmd(const Message &msg, User &user)
+int Server::operCmd(const Message &msg, User &user)
 {
 	if (msg.getParams().size() < 2)
 		sendError(user, ERR_NEEDMOREPARAMS, msg.getCommand());
@@ -87,21 +87,22 @@ int		Server::operCmd(const Message &msg, User &user)
 	{
 		try
 		{
-			std::string	pass = operators.at(msg.getParams()[0]);
+			std::string pass = operators.at(msg.getParams()[0]);
 			if (hash::hash(msg.getParams()[1]) == pass)
 			{
 				user.setFlag(IRCOPERATOR);
 				return sendReply(user.getServername(), user, RPL_YOUREOPER);
 			}
 		}
-		catch(const std::exception& e)
-		{}
+		catch (const std::exception &e)
+		{
+		}
 		sendError(user, ERR_PASSWDMISMATCH);
 	}
 	return (0);
 }
 
-int		Server::quitCmd(const Message &msg, User &user)
+int Server::quitCmd(const Message &msg, User &user)
 {
 	if (msg.getParams().size() > 0)
 		user.setQuitMessage(msg.getParams()[0]);

@@ -2,8 +2,8 @@
 
 Message::Message(const std::string &str)
 {
-	std::string	strWithoutNL = std::string(str.begin(), str.end() - 1);
-	std::queue<std::string>	que = split(strWithoutNL, ' ', false);
+	std::string strWithoutNL = std::string(str.begin(), str.end() - 1);
+	std::queue<std::string> que = split(strWithoutNL, ' ', false);
 	if (que.size() > 0 && que.front()[0] == ':')
 	{
 		prefix = std::string(que.front().begin() + 1, que.front().end());
@@ -18,7 +18,7 @@ Message::Message(const std::string &str)
 	{
 		if (que.front()[0] == ':')
 		{
-			std::string	s(que.front().begin() + 1, que.front().end());
+			std::string s(que.front().begin() + 1, que.front().end());
 			que.pop();
 			while (que.size() > 0)
 			{
@@ -36,20 +36,21 @@ Message::Message(const std::string &str)
 	}
 }
 
-const std::string	&Message::getPrefix() const
+const std::string &Message::getPrefix() const
 {
 	return prefix;
 }
 
-const std::string	&Message::getCommand() const
+const std::string &Message::getCommand() const
 {
 	return command;
 }
 
-const std::vector<std::string>	&Message::getParams() const
+const std::vector<std::string> &Message::getParams() const
 {
 	return parameters;
 }
 
 Message::~Message()
-{}
+{
+}
