@@ -2,4 +2,6 @@ ircserv
 *.out
 *.o
 .DS_Store
-.vscode\.idea
+.vscode
+.idea
+objects/*

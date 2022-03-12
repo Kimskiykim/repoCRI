@@ -1,7 +1,5 @@
 #pragma once
 
-class User;
-
 #include <string>
 #include <vector>
 #include <map>
